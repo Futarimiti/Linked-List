@@ -185,3 +185,78 @@ public T get(int pos)
 	return target.data;
 }
 ```
+
+Some other methods, not essential but helpful:
+
+`toString` override:
+```java
+public String toString(String sep)
+{
+	Node<T> cur = header.next;
+	String[] elems = new String[size];
+	for (int i = 0 ; i < elems.length ; i++)
+	{
+		// if (cur == null) break;
+		elems[i] = cur.data.toString();
+		cur = cur.next;
+	}
+	return format("[%s]" , String.join(sep , elems));
+}
+
+@Override
+public String toString()
+{
+	return this.toString(" , ");
+}
+```
+
+`reverse` to return a reversed copy of this linked list:
+```java
+public SinglyLinkedList<T> reverse()
+{
+	if (this.size <= 1) return this;
+
+	// head for new list
+	Node<T> newHead = new Node<>(null , null);
+
+	// traverse through original
+	// every time update first element of new list
+	Node<T> cur = this.header;
+	while (cur.next != null)
+	{
+		cur = cur.next;
+		Node<T> curCopy = cur.copy();
+
+		curCopy.next = newHead.next;
+		newHead.next = curCopy;
+	}
+
+	return new SinglyLinkedList<>(newHead);
+}
+```
+...where method `copy` in `Node<T>` returns a copy of self:
+```java
+public Node<E> copy()
+{
+	return new Node<>(this.data , this.next);
+}
+```
+...and the constructor called at the end utilises a header node to construct a linked list:
+```java
+private SinglyLinkedList(Node<T> header)
+{
+	this.header = header;
+
+	// get size
+	int counter = 0;
+	Node<T> cur = header;
+
+	while (cur.next != null)
+	{
+		counter++;
+		cur = cur.next;
+	}
+
+	this.size = counter;
+}
+```

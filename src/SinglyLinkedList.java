@@ -12,10 +12,34 @@ public class SinglyLinkedList<T>
 			this.data = data;
 			this.next = next;
 		}
+
+		public Node<E> copy()
+		{
+			return new Node<>(this.data , this.next);
+		}
 	}
 
 	Node<T> header = new Node<>(null , null);
 	private int size = 0;
+
+	public SinglyLinkedList(){}
+
+	private SinglyLinkedList(Node<T> header)
+	{
+		this.header = header;
+
+		// get size
+		int counter = 0;
+		Node<T> cur = header;
+
+		while (cur.next != null)
+		{
+			counter++;
+			cur = cur.next;
+		}
+
+		this.size = counter;
+	}
 
 	public void append(T elem)
 	{
@@ -132,5 +156,46 @@ public class SinglyLinkedList<T>
 	public int size()
 	{
 		return size;
+	}
+
+	public SinglyLinkedList<T> reverse()
+	{
+		if (this.size <= 1) return this;
+
+		// head for new list
+		Node<T> newHead = new Node<>(null , null);
+
+		// traverse through original
+		// every time update first element of new list
+		Node<T> cur = this.header;
+		while (cur.next != null)
+		{
+			cur = cur.next;
+			Node<T> curCopy = cur.copy();
+
+			curCopy.next = newHead.next;
+			newHead.next = curCopy;
+		}
+
+		return new SinglyLinkedList<>(newHead);
+	}
+
+	public String toString(String sep)
+	{
+		Node<T> cur = header.next;
+		String[] elems = new String[size];
+		for (int i = 0 ; i < elems.length ; i++)
+		{
+			// if (cur == null) break;
+			elems[i] = cur.data.toString();
+			cur = cur.next;
+		}
+		return format("[%s]" , String.join(sep , elems));
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.toString(" , ");
 	}
 }
